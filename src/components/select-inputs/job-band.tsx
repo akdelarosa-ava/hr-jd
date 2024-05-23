@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { JobLevels } from "@/models/job-description";
+import { JobBands } from "@/models/job-description";
 
 type Props = {
   // onChange: (value: string) => void;
@@ -15,17 +15,17 @@ type Props = {
   placeholder?: string;
 };
 
-const JobLevelSelect = ({ placeholder }: Props) => {
+const JobBandSelect = ({ placeholder }: Props) => {
   return (
     // onValueChange={onChange} defaultValue={value} value={value}
     <Select>
-      <SelectTrigger className="border-slate-700 w-full text-gray-900 placeholder:text-gray-500">
+      <SelectTrigger className="border-slate-700 w-full text-gray-900 data-[placeholder]:text-gray-500">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {JobLevels.map((level, index) => (
-          <SelectItem key={index} value={level}>
-            {level}
+        {JobBands.map((band, index) => (
+          <SelectItem key={index} value={band}>
+            {band}
           </SelectItem>
         ))}
       </SelectContent>
@@ -33,4 +33,4 @@ const JobLevelSelect = ({ placeholder }: Props) => {
   );
 };
 
-export default JobLevelSelect;
+export default JobBandSelect;

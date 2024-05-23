@@ -1,6 +1,6 @@
 export default interface JobDescription {
   jobTitle: string;
-  jobLevel: string;
+  jobBand: string;
   businessArea: string;
   requirements: string;
   description: string;
@@ -8,12 +8,12 @@ export default interface JobDescription {
 
 export type JobDescriptionForm = {
   jobTitle: string;
-  jobLevel: string;
+  jobBand: string;
   businessArea: string;
   requirements: string;
 };
 
-export const JobLevels = [
+export const JobBands = [
   "Core A",
   "Core B",
   "Implement A",
@@ -27,7 +27,15 @@ export const JobLevels = [
 
 export const BusinessAreas = ["BA 1", "BA 2", "BA 3", "BA 4", "BA 5"];
 
+export const Departments = [
+  "Department 1",
+  "Department 2",
+  "Department 3",
+  "Department 4",
+  "Department 5",
+];
+
 export enum JobDescriptionType {
-  New = "New job description",
-  Existing = "Existing Job Descriptions",
+  New = "Generate New job description",
+  Existing = "Search Existing Job Descriptions",
 }

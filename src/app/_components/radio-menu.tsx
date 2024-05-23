@@ -8,7 +8,7 @@ type Props = {
 
 const RadioMenu = ({ changeTitle }: Props) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mb-5">
       <Label className="text-base font-semibold mb-3">
         Job Description Type <span className="text-red-500">*</span>
       </Label>

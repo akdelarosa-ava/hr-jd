@@ -13,7 +13,7 @@ import {
 
 const Navbar = () => {
   return (
-    <div className="max-w-full w-full drop-shadow-xl shadow-2xl bg-primary max-h-[70px]">
+    <div className="sticky top-0 max-w-full w-full drop-shadow-xl shadow-2xl bg-primary max-h-[70px] z-10">
       <div className="flex flex-row justify-between gap-2 relative">
         <div className="w-[155px] bg-white h-[70px]">
           <div className="absolute">

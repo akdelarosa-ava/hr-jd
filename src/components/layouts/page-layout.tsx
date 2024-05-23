@@ -14,7 +14,7 @@ export default function PageLayout({ children }: { children: ReactNode }) {
       <section
         className={`ml-[80px] ${
           expand ? "lg:ml-[280px]" : "lg:ml-[80px]"
-        } duration-200 min-h-screen h-full`}
+        } duration-200 max-h-full h-full bg-slate-50 pb-10`}
       >
         <Navbar />
         {children}
