@@ -7,13 +7,12 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
 import {
-  LuArrowRightLeft,
+  LuCheck,
   LuCopy,
   LuDownload,
   LuPen,
-  LuRefreshCcw,
   LuRefreshCw,
-  LuShieldCheck,
+  LuX,
 } from "react-icons/lu";
 
 import { JobDescriptionType } from "@/models/job-description";
@@ -23,6 +22,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import ExistingJobDescriptionForm from "@/components/forms/existing-job-description-form";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
+import TooltipProvider from "@/components/tooltips/tooltip-provider";
+import WordCountTooltip from "@/components/tooltips/word-count-tooltip";
 
 export default function Home() {
   const [title, setTitle] = useState<string>(JobDescriptionType.New);
@@ -65,15 +66,18 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col mx-0 md:mx-10 lg:mx-12 gap-4 mb-5">
-          <div className="flex flex-col lg:flex-row justify-between">
-            <h2 className="text-lg lg:text-xl xl:text-2xl text-wrap lg:mt-3 font-medium">
-              Search Result:
+          <div className="flex flex-col justify-between">
+            <h2 className="text-lg lg:text-xl xl:text-2xl text-wrap lg:mt-3 font-semibold text-blue-800">
+              Result:
             </h2>
-            <div className="flex flex-row gap-4 justify-between">
-              <div className="flex flex-row gap-3">
+            <div className="flex flex-col md:flex-row gap-4 justify-between">
+              <span className="flex flex-row text-base font-medium py-4">
+                GPT4
+              </span>
+              <div className="flex flex-row gap-3 justify-center">
                 <span className="text-base font-medium py-4">Count:</span>
-                <div className="hidden md:flex md:flex-col gap-1">
-                  <div className="flex flex-row justify-between">
+                <div className="flex flex-col gap-1">
+                  <div className="flex flex-row justify-between text-xs mb-1">
                     <span>500</span>
                     <span>1000</span>
                     <span>1500</span>
@@ -83,64 +87,87 @@ export default function Home() {
                     min={500}
                     max={1500}
                     step={500}
-                    className="w-[300px] text-blue-800 focus:ring-0 focus:outline-none"
+                    className="w-[150px] text-blue-800 focus:ring-0 focus:outline-none"
                     color="text-blue-600"
                     onValueChange={(value) => changeCountValue(value)}
                   />
                 </div>
 
-                <Input
-                  type="number"
-                  className="w-[50px] focus:ring-0 focus:outline-none p-1 text-right mt-1 rounded-md"
-                  value={countValue}
-                  onChange={(e) =>
-                    e.target.value == ""
-                      ? setCountValue(0)
-                      : setCountValue(parseInt(e.target.value))
-                  }
-                />
+                <TooltipProvider tip={<WordCountTooltip />}>
+                  <Input
+                    type="number"
+                    className="w-[65px] focus:ring-0 focus:outline-none p-1 text-right mt-1 rounded-md"
+                    value={countValue}
+                    readOnly
+                    onChange={(e) =>
+                      e.target.value == ""
+                        ? setCountValue(0)
+                        : setCountValue(parseInt(e.target.value))
+                    }
+                  />
+                </TooltipProvider>
                 <span className="text-base font-medium py-4">words</span>
-              </div>
 
-              <span className="flex flex-row text-base font-medium py-4">
-                GPT-4
-              </span>
+                <TooltipProvider tip="To let A.I. regenrate new result.">
+                  <Button
+                    variant="ghost"
+                    className="text-nowrap text-blue-800 text-base font-medium hidden lg:flex lg:mt-1"
+                  >
+                    <LuRefreshCw className="mr-2 text-base" /> Re-generate
+                  </Button>
+                </TooltipProvider>
+              </div>
             </div>
+            <TooltipProvider tip="To let A.I. regenrate new result.">
+              <Button
+                variant="ghost"
+                className="text-blue-800 text-base font-medium lg:hidden"
+              >
+                <LuRefreshCw className="mr-3 text-base" /> Re-generate
+              </Button>
+            </TooltipProvider>
           </div>
 
           <ScrollArea className="min-h-[500px] w-full rounded-xl border-[1px] border-collapse border-gray-300 bg-white"></ScrollArea>
 
-          <div className="flex flex-col md:flex-row">
-            <div className="w-full flex flex-col lg:flex-row justify-end">
-              <Button variant="ghost" className="text-primary">
-                <LuPen className="mr-3 text-base" /> Edit Result
+          <div className="flex flex-col lg:flex-row gap-3">
+            <div className="w-full flex flex-col lg:w-2/3 lg:flex-row">
+              <p className="text-gray-700 text-sm">
+                <span className="font-semibold">{"Disclaimer:"}</span> These
+                results are auto-generated by AI. Please review and validate
+                them with a human expert before using them for your purposes.
+              </p>
+            </div>
+            <div className="w-full flex flex-col lg:w-1/3 lg:flex-row justify-end gap-4">
+              <Button className="text-white min-w-[150px]">
+                <LuPen className="mr-3 text-base" /> Edit
               </Button>
-              <Button variant="ghost" className="text-primary">
-                <LuRefreshCw className="mr-3 text-base" /> Regenrate Result
+
+              <Button
+                variant="ghost"
+                className="text-blue-800 font-semibold hidden"
+              >
+                <LuX className="mr-3 text-base" /> Discard
               </Button>
-              <Button variant="ghost" className="text-primary">
-                <LuShieldCheck className="mr-3 text-base" /> Check for bias
+
+              <Button className="text-white hidden">
+                <LuCheck className="mr-3 text-base" /> Save Changes
+              </Button>
+
+              <Button
+                variant="ghost"
+                className="text-blue-800 font-semibold hidden"
+              >
+                <LuCopy className="mr-3 text-base" /> Copy
+              </Button>
+
+              <Button
+                variant="ghost"
+                className="text-blue-800 font-semibold hidden"
+              >
+                <LuDownload className="mr-3 text-base" /> Download
               </Button>
             </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col mx-0 md:flex-row md:mx-10 lg:mx-12 gap-4 mb-5 bg-gray-200 p-5">
-          <div className="flex flex-col">
-            <h3 className="text-base md:text-lg xl:text-xl font-medium">
-              Accept Job Description?
-            </h3>
-            <p className="text-sm lg:text-base font-base">
-              Your feedback on the search results matters. Do you want to save
-              this job description to the database for future reference?
-            </p>
-          </div>
-
-          <div className="flex flex-row gap-2 m-auto">
-            <Button className="bg-primary">Yes, Save</Button>
-            <Button className="bg-gray-500 hover:bg-gray-400">
-              No, Thanks
-            </Button>
           </div>
         </div>
       </div>

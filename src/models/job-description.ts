@@ -1,16 +1,20 @@
 export default interface JobDescription {
+  roleId?: string;
   jobTitle: string;
-  jobBand: string;
+  jobBand?: string;
   businessArea: string;
-  requirements: string;
-  description: string;
+  department: string;
+  additionalInfo?: string;
+  description?: string;
 }
 
 export type JobDescriptionForm = {
+  roleId?: string;
   jobTitle: string;
-  jobBand: string;
+  jobBand?: string;
   businessArea: string;
-  requirements: string;
+  department: string;
+  additionalInfo?: string;
 };
 
 export const JobBands = [
@@ -36,6 +40,6 @@ export const Departments = [
 ];
 
 export enum JobDescriptionType {
-  New = "Generate New job description",
+  New = "Generate New Job Description/Role Profile",
   Existing = "Search Existing Job Descriptions",
 }

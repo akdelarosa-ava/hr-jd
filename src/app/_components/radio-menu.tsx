@@ -1,6 +1,7 @@
 "use client";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { JobDescriptionType } from "@/models/job-description";
 
 type Props = {
   changeTitle: (value: string) => void;
@@ -14,16 +15,16 @@ const RadioMenu = ({ changeTitle }: Props) => {
       </Label>
       <RadioGroup
         defaultValue="new"
-        className="flex flex-col gap-2 md:flex-row md:gap-4"
+        className="flex flex-col gap-3 lg:flex-row lg:gap-4"
         onValueChange={(value) => changeTitle(value)}
       >
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="new" id="new" />
-          <Label htmlFor="new">Generate New Job Description</Label>
+          <Label htmlFor="new">{JobDescriptionType.New}</Label>
         </div>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="existing" id="existing" />
-          <Label htmlFor="existing">Search Existing Job Descriptions</Label>
+          <Label htmlFor="existing">{JobDescriptionType.Existing}</Label>
         </div>
       </RadioGroup>
     </div>

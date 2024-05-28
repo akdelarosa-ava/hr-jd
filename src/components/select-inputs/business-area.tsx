@@ -19,7 +19,7 @@ const BusinessAreaSelect = ({ placeholder }: Props) => {
   return (
     // onValueChange={onChange} defaultValue={value} value={value}
     <Select>
-      <SelectTrigger className="border-slate-700 w-full text-gray-900 placeholder:text-gray-500">
+      <SelectTrigger className="border-slate-700 w-full text-gray-900 data-[placeholder]:text-gray-500">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

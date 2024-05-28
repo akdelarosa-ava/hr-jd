@@ -36,8 +36,8 @@ const PageTitle = ({ title }: Props) => {
       <div className="flex flex-row mb-10">
         <div className="w-10 mr-3"></div>
         <div className="w-full flex flex-row item-start text-left">
-          <p className="flex flex-row font-semibold text-sm text-blue-600 cursor-pointer gap-1 hover:text-blue-800">
-            <LucideBookUser /> <span className="">Open User Guide</span>
+          <p className="flex flex-row font-semibold text-xs md:text-sm gap-1">
+            {"Need help? Check out the "}<span className="text-blue-600 cursor-pointer hover:text-blue-800">User Guide</span>.
           </p>
         </div>
       </div>
