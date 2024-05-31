@@ -1,13 +1,37 @@
-import JobDescription from "@/models/job-description";
+import JobDescription, { JobDescriptionForm } from "@/models/job-description";
 import { JobDescriptionService } from "@/services/job-description-service";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
-export const DESCRIPTION_CACHE_KEY = "description";
+export const GENERATE_CACHE_KEY = "generate";
 
-export const useJobDescription = () => {
-  const jdService = new JobDescriptionService<JobDescription>("/descriptions");
-  return useQuery({
-    queryKey: [DESCRIPTION_CACHE_KEY],
-    queryFn: () => jdService.getAll(),
-  });
+export const useGenerate = (
+  onSuccess?: (data:JobDescription) => void,
+  onError?: (error: Error | string[]) => void
+) => {
+  const jdService = new JobDescriptionService<JobDescription>("/generate");
+  const queryClient = useQueryClient();
+
+  return useMutation<JobDescription, Error, JobDescriptionForm>({
+    mutationFn: (input: JobDescriptionForm) => jdService.post(input),
+    onSuccess: (data) => {
+      if (!onSuccess) return;
+
+      queryClient.invalidateQueries({
+        queryKey: [GENERATE_CACHE_KEY]
+      })
+
+      onSuccess(data);
+    },
+    onError: (error, _) => {
+      if (!onError) return;
+      
+      if (error instanceof AxiosError && error.response) {
+        console.log(error.response.data.errors)
+        return;
+      }
+
+      onError(error);
+    }
+  })
 };

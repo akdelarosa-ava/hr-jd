@@ -1,20 +1,22 @@
 export default interface JobDescription {
-  roleId?: string;
-  jobTitle: string;
-  jobBand?: string;
-  businessArea: string;
+  role_id?: string;
+  job_title: string;
+  job_band: string | null;
+  business_area: string;
   department: string;
-  additionalInfo?: string;
-  description?: string;
+  additional_info: string | null;
+  count: number;
+  job_description: string | null;
 }
 
 export type JobDescriptionForm = {
-  roleId?: string;
-  jobTitle: string;
-  jobBand?: string;
-  businessArea: string;
+  role_id?: string;
+  job_title: string;
+  job_band: string | null;
+  business_area: string;
   department: string;
-  additionalInfo?: string;
+  additional_info: string | null;
+  count: number;
 };
 
 export const JobBands = [

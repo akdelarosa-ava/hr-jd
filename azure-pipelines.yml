@@ -3,11 +3,11 @@ trigger:
 
 variables:
 
-  azureSubscription: 'c69ed9e4-ebdf-469b-9ca1-77946daa3c96'
+  azureSubscription: 'SVC-AQAGenAI'
 
-  webAppName: 'hr-jd'
+  webAppName: 'aqajobs'
 
-  environmentName: 'hr-jd'
+  environmentName: 'aqajobs'
 
   vmImageName: 'ubuntu-latest'
 
@@ -59,7 +59,7 @@ stages:
         deploy:
           steps:
           - task: AzureWebApp@1
-            displayName: 'Azure Web App Deploy: hr-jd'
+            displayName: 'Azure Web App Deploy: aqajobs'
             inputs:
               azureSubscription: $(azureSubscription)
               appType: 'webAppLinux'

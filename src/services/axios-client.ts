@@ -16,6 +16,10 @@ export abstract class AxiosClient<T> {
   constructor(protected endpoint: string) {
     this.axiosInstance = axios.create({
       baseURL: process.env.API_BASE_URL,
+      headers: {
+        "Content-Type": "application/json",
+        "x-functions-key": process.env.API_KEY
+      }
     });
   }
 

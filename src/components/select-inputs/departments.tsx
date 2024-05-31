@@ -10,15 +10,14 @@ import {
 import { Departments } from "@/models/job-description";
 
 type Props = {
-  // onChange: (value: string) => void;
-  // value: string;
+  onChange: (value: string) => void;
+  value: string;
   placeholder?: string;
 };
 
-const DepartmentSelect = ({ placeholder }: Props) => {
+const DepartmentSelect = ({ onChange, value, placeholder }: Props) => {
   return (
-    // onValueChange={onChange} defaultValue={value} value={value}
-    <Select>
+    <Select onValueChange={onChange} defaultValue={value} value={value} required>
       <SelectTrigger className="border-slate-700 w-full text-gray-900 data-[placeholder]:text-gray-500">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

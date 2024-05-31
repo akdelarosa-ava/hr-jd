@@ -10,7 +10,7 @@ import { Textarea } from "../ui/textarea";
 const ExistingJobDescriptionForm = () => {
   return (
     <>
-      <div className="flex flex-col lg:flex-row w-full lg:w-1/2">
+      {/* <div className="flex flex-col lg:flex-row w-full lg:w-1/2">
         <div className="flex flex-col w-full pr-3">
           <Label className="text-base font-semibold mb-3">
             Role ID <span className="text-xs font-light">{"(Optional)"}</span>
@@ -61,7 +61,7 @@ const ExistingJobDescriptionForm = () => {
           className="border-slate-700 w-full focus:ring-0 focus:outline-none focus:ring-offset-0 resize-none"
           placeholder="Provide any technical, subject matter, or people management skills essential for the role."
         />
-      </div>
+      </div> */}
 
       <div className="flex flex-col md:items-end">
         <Button className="bg-primary p-6">
