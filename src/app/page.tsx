@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import TooltipProvider from "@/components/tooltips/tooltip-provider";
 import WordCountTooltip from "@/components/tooltips/word-count-tooltip";
 import { Textarea } from "@/components/ui/textarea";
+import RegenerateButton from "./_components/regenerate-button";
 
 export default function Home() {
   const [title, setTitle] = useState<string>(JobDescriptionType.New);
@@ -40,7 +41,6 @@ export default function Home() {
     count: 0,
     job_description: "",
   });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const changeTitle = (value: string) => {
     if (value == "existing") {
@@ -55,10 +55,6 @@ export default function Home() {
     setCountValue(sliderValue);
   };
 
-  const handleRegenerate = (data:JobDescription, count:number) => {
-    console.log(count, data)
-  }
-
   return (
     <PageLayout>
       <div className="flex flex-col mx-5 my-10 xl:w-2/3 xl:mx-auto xl:mt-10">
@@ -70,7 +66,11 @@ export default function Home() {
             {title == JobDescriptionType.Existing ? (
               <ExistingJobDescriptionForm />
             ) : (
-              <NewJobDescriptionForm setFormValues={setFormValues} countValue={countValue} setJobDescriptionValue={setJobDescriptionValue}/>
+              <NewJobDescriptionForm
+                setFormValues={setFormValues}
+                countValue={countValue}
+                setJobDescriptionValue={setJobDescriptionValue}
+              />
             )}
           </CardContent>
         </Card>
@@ -85,7 +85,7 @@ export default function Home() {
         <div className="flex flex-col mx-0 md:mx-10 lg:mx-12 gap-4 mb-5">
           <div className="flex flex-col justify-between">
             <h2 className="text-lg lg:text-xl xl:text-2xl text-wrap lg:mt-3 font-semibold text-blue-800">
-              Result:
+              Result: {formValues.job_title}
             </h2>
             <div className="flex flex-col md:flex-row gap-4 justify-between">
               <span className="flex flex-row text-base font-medium py-4">
@@ -125,28 +125,16 @@ export default function Home() {
                 </TooltipProvider>
                 <span className="text-base font-medium py-4">words</span>
 
-                <TooltipProvider tip="To let A.I. regenrate new result.">
-                  <Button
-                    onClick={() => handleRegenerate(formValues,countValue)}
-                    variant="ghost"
-                    className="text-nowrap text-blue-800 text-base font-medium hidden lg:flex lg:mt-1"
-                  >
-                    <LuRefreshCw className="mr-2 text-base" /> Re-generate
-                  </Button>
-                </TooltipProvider>
+                <RegenerateButton data={formValues} count={countValue} />
               </div>
             </div>
-            <TooltipProvider tip="To let A.I. regenrate new result.">
-              <Button
-                variant="ghost"
-                className="text-blue-800 text-base font-medium lg:hidden"
-              >
-                <LuRefreshCw className="mr-3 text-base" /> Re-generate
-              </Button>
-            </TooltipProvider>
           </div>
 
-          <Textarea className="resize-none min-h-[300px] max-h-[300px] w-full rounded-xl" value={JobDescriptionValue} readOnly/>
+          <Textarea
+            className="resize-none min-h-[300px] max-h-[300px] w-full rounded-xl p-4"
+            value={JobDescriptionValue}
+            readOnly
+          />
 
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="w-full flex flex-col lg:w-2/3 lg:flex-row">
@@ -157,17 +145,11 @@ export default function Home() {
               </p>
             </div>
             <div className="w-full flex flex-col lg:w-1/3 lg:flex-row justify-end gap-2">
-              <Button
-                variant="ghost"
-                className="text-blue-800 font-semibold"
-              >
+              <Button variant="ghost" className="text-blue-800 font-semibold">
                 <LuCopy className="mr-3 text-base" /> Copy
               </Button>
 
-              <Button
-                variant="ghost"
-                className="text-blue-800 font-semibold"
-              >
+              <Button variant="ghost" className="text-blue-800 font-semibold">
                 <LuDownload className="mr-3 text-base" /> Download
               </Button>
               <Button className="text-white min-w-[150px]">
@@ -184,8 +166,6 @@ export default function Home() {
               <Button className="text-white hidden">
                 <LuCheck className="mr-3 text-base" /> Save Changes
               </Button>
-
-              
             </div>
           </div>
         </div>

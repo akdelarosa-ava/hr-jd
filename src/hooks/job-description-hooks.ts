@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 export const GENERATE_CACHE_KEY = "generate";
 
 export const useGenerate = (
-  onSuccess?: (data:JobDescription) => void,
+  onSuccess?: (data: JobDescription) => void,
   onError?: (error: Error | string[]) => void
 ) => {
   const jdService = new JobDescriptionService<JobDescription>("/generate");
@@ -18,20 +18,51 @@ export const useGenerate = (
       if (!onSuccess) return;
 
       queryClient.invalidateQueries({
-        queryKey: [GENERATE_CACHE_KEY]
-      })
+        queryKey: [GENERATE_CACHE_KEY],
+      });
 
       onSuccess(data);
     },
     onError: (error, _) => {
       if (!onError) return;
-      
+
       if (error instanceof AxiosError && error.response) {
-        console.log(error.response.data.errors)
+        console.log(error.response.data.errors);
         return;
       }
 
       onError(error);
-    }
-  })
+    },
+  });
+};
+
+export const useRegenerate = (
+  onSuccess?: (data: JobDescription) => void,
+  onError?: (error: Error | string[]) => void
+) => {
+  const jdService = new JobDescriptionService<JobDescription>("/regenerate");
+  const queryClient = useQueryClient();
+
+  return useMutation<JobDescription, Error, JobDescription>({
+    mutationFn: (input: JobDescription) => jdService.post(input),
+    onSuccess: (data) => {
+      if (!onSuccess) return;
+
+      queryClient.invalidateQueries({
+        queryKey: [GENERATE_CACHE_KEY],
+      });
+
+      onSuccess(data);
+    },
+    onError: (error, _) => {
+      if (!onError) return;
+
+      if (error instanceof AxiosError && error.response) {
+        console.log(error.response.data.errors);
+        return;
+      }
+
+      onError(error);
+    },
+  });
 };
