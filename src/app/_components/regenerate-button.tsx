@@ -1,10 +1,10 @@
+import React, { ReactNode } from "react";
 import TooltipProvider from "@/components/tooltips/tooltip-provider";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useRegenerate } from "@/hooks/job-description-hooks";
-import { cn } from "@/lib/utils";
 import JobDescription from "@/models/job-description";
-import React, { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 import { LuRefreshCw } from "react-icons/lu";
 import { CircleSpinnerOverlay } from "react-spinner-overlay";
 
@@ -61,6 +61,7 @@ const RegenerateButton = ({ data, count }: Props) => {
       </TooltipProvider>
       <CircleSpinnerOverlay
         loading={isPending}
+        color="#371376"
         message="Re-generating Job Description..."
       />
     </>

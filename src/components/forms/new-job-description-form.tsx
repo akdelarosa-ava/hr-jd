@@ -18,6 +18,7 @@ import { useGenerate } from "@/hooks/job-description-hooks";
 import JobDescription from "@/models/job-description";
 
 const formSchema = z.object({
+  _id: z.string().nullable(),
   job_title: z.string().min(1,{message: "Please provide a valid Job Title."}),
   job_band: z.string().nullable(),
   business_area: z.string().min(1,{message: "Please select a Business Area."}),
@@ -32,12 +33,17 @@ type Props = {
   setFormValues: Dispatch<SetStateAction<JobDescription>>;
   setJobDescriptionValue: Dispatch<SetStateAction<string>>;
   countValue: number;
+  editMode: boolean;
+  clearForm: boolean;
+  setClearForm: Dispatch<SetStateAction<boolean>>;
 }
 
-const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValue}:Props) => {
-  const form = useForm<FormModel>({
+const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValue, editMode, clearForm, setClearForm}:Props) => {
+  
+  const newJDForm = useForm<FormModel>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      _id: null,
       job_title: "",
       job_band: "",
       business_area: "",
@@ -52,7 +58,7 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
     handleSubmit,
     watch,
     formState: {isValid}
-  } = form;
+  } = newJDForm;
 
   const { toast } = useToast();
 
@@ -65,8 +71,6 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
         description: `Job Description for ${data.job_title} has been generated.`
       });
     }
-    
-    
   }
 
   const onError = (error: Error | string[]) => {
@@ -90,9 +94,16 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
     mutate(data);
   }
 
+  useEffect(() => {
+    if (clearForm) {
+      newJDForm.reset()
+      setClearForm(false)
+    }
+  },[clearForm]);
+
   return (
     <>
-      <Form {...form}>
+      <Form {...newJDForm}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col mb-3">
             <FormField
@@ -202,13 +213,13 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
           </div>
 
           <div className="flex flex-col md:items-end">
-            <Button className="bg-blue-800 p-6" disabled={isPending}>
+            <Button className="bg-blue-800 p-6" disabled={editMode}>
               Generate Result <LuSendHorizonal className="ml-3 text-base" />
             </Button>
           </div>
         </form>
       </Form>
-      <CircleSpinnerOverlay loading={isPending} message="Generating Job Description..."/>
+      <CircleSpinnerOverlay loading={isPending} color="#371376" message="Generating Job Description..."/>
     </>
   );
 };

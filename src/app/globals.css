@@ -59,7 +59,9 @@
   }
 
   textarea::-webkit-scrollbar {
-    width: 4px;
+    width: 8px;
+    padding-top:4px;
+    padding-right: 4px;
   }
   
   textarea::-webkit-scrollbar-button {

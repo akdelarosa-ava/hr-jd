@@ -1,5 +1,5 @@
 export default interface JobDescription {
-  role_id?: string;
+  _id: string | null;
   job_title: string;
   job_band: string | null;
   business_area: string;
@@ -10,7 +10,7 @@ export default interface JobDescription {
 }
 
 export type JobDescriptionForm = {
-  role_id?: string;
+  _id: string | null;
   job_title: string;
   job_band: string | null;
   business_area: string;
