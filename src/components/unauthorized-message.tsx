@@ -1,3 +1,5 @@
+import { SignInButton } from "./signin-button";
+
 export default function UnauthorizedMessage() {
   return (
     <div className="w-full text-center drop-shadow-xs divide-gray-400">
@@ -8,7 +10,9 @@ export default function UnauthorizedMessage() {
         Unauthorized
       </h3>
       <hr />
-      <div className="mt-6"></div>
+      <div className="mt-6">
+        <SignInButton />
+      </div>
     </div>
   );
 }
