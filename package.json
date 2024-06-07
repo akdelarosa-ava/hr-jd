@@ -12,6 +12,8 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@azure/msal-browser": "^3.16.0",
+    "@azure/msal-react": "^2.0.18",
     "@hookform/resolvers": "^3.4.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import QueryClientProvider from "@/components/queryclient-provider";
 import { Toaster } from "@/components/ui/toaster";
+import JDMsalProvider from "@/msal/jd-msal-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <QueryClientProvider>{children}</QueryClientProvider>
+        <JDMsalProvider>
+          <QueryClientProvider>{children}</QueryClientProvider>
+        </JDMsalProvider>
         <Toaster />
       </body>
     </html>
