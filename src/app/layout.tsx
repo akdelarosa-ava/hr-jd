@@ -22,8 +22,8 @@ export default function RootLayout({
       <body className={inter.className}>
         <JDMsalProvider>
           <QueryClientProvider>{children}</QueryClientProvider>
+          <Toaster />
         </JDMsalProvider>
-        <Toaster />
       </body>
     </html>
   );

@@ -1,12 +1,12 @@
 "use client";
 import { ReactNode, useEffect } from "react";
 import {
-  AuthenticatedTemplate,
+  MsalAuthenticationTemplate,
   MsalProvider,
-  UnauthenticatedTemplate,
 } from "@azure/msal-react";
 import { initializeMsal, msalInstance } from "./msal";
-import UnauthorizedMessage from "@/components/unauthorized-message";
+import { InteractionType } from "@azure/msal-browser";
+import { userDataLoginRequest } from "./auth-config";
 
 type Props = {
   children: ReactNode;
@@ -18,10 +18,12 @@ const JDMsalProvider = ({ children }: Props) => {
 
   return (
     <MsalProvider instance={msalInstance}>
-      <AuthenticatedTemplate>{children}</AuthenticatedTemplate>
-      <UnauthenticatedTemplate>
-        <UnauthorizedMessage />
-      </UnauthenticatedTemplate>
+      <MsalAuthenticationTemplate 
+        interactionType={InteractionType.Redirect}
+        authenticationRequest={{ ...userDataLoginRequest }}
+      >
+        {children}
+      </MsalAuthenticationTemplate>
     </MsalProvider>
   );
 };

@@ -1,8 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import logo from "@/assets/images/logo.png";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,8 +8,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { handleLogout } from "@/msal/msal";
+import { getLoggedInUser } from "@/msal/user-helper";
+import UserPhoto from "./user-photo";
 
 const Navbar = () => {
+  const user = getLoggedInUser();
   return (
     <div className="sticky top-0 max-w-full w-full drop-shadow-xl shadow-2xl bg-primary max-h-[70px] z-10">
       <div className="flex flex-row justify-between gap-2 relative">
@@ -24,20 +26,19 @@ const Navbar = () => {
         <div className="mr-5 py-3 text-white">
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>AR</AvatarFallback>
-              </Avatar>
+              <UserPhoto user={user} />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="mr-5 min-w-[250px]">
               <DropdownMenuItem>
                 <div className="flex flex-col item-start text-left mt-1">
-                  <p className="text-sm font-bold">{"Kurt"}</p>
-                  <p className="text-xs text-gray">{"akdrosa@aqa.org.uk"}</p>
+                  <p className="text-sm font-bold">{user?.name}</p>
+                  <p className="text-xs text-gray">{user?.username}</p>
                 </div>
               </DropdownMenuItem>
               <DropdownMenuSeparator></DropdownMenuSeparator>
-              <DropdownMenuItem>Sign out</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleLogout('redirect')}>
+                Sign out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

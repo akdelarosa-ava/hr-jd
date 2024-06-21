@@ -1,19 +1,20 @@
 import { LucideBookUser } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import logo from "public/logo_blue.jpg";
+import { getUserPhotoAvatar } from "@/msal/msal-graph";
+import UserPhoto from "./user-photo";
+import { getLoggedInUser } from "@/msal/user-helper";
 type Props = {
   title: string;
 };
 
 const PageTitle = ({ title }: Props) => {
+  const user = getLoggedInUser();
   return (
     <>
       <div className="flex flex-row mb-5">
         <div className="w-10 mr-3">
-          <Avatar className="-z-1">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>AR</AvatarFallback>
-          </Avatar>
+          <UserPhoto user={user} className="-z-1" />
         </div>
         <div className="w-full flex flex-col item-start text-left">
           <p className="text-sm font-bold text-gray-500">{"You"}</p>

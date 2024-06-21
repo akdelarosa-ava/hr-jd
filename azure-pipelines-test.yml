@@ -1,13 +1,13 @@
 trigger:
-- dev
+- test
 
 variables:
 
   azureSubscription: 'SVC-AQAGenAI'
 
-  webAppName: 'aqajobs'
+  webAppName: 'aqajobs-test'
 
-  environmentName: 'aqajobs'
+  environmentName: 'aqajobs-test'
 
   vmImageName: 'ubuntu-latest'
 

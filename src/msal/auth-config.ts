@@ -30,7 +30,7 @@ export const loginRequest = {
 };
 
 export const userDataLoginRequest = {
-  scopes: ["user.read"],
+  scopes: ["email", "profile", "User.Read"],
 };
 
 export const graphConfig = {

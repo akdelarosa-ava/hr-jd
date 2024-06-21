@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import TooltipProvider from "@/components/tooltips/tooltip-provider";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -11,13 +11,33 @@ import { CircleSpinnerOverlay } from "react-spinner-overlay";
 type Props = {
   data: JobDescription;
   count: number;
+  setJobDescriptionValue: Dispatch<SetStateAction<string>>;
+  JobDescriptionValue: string;
+  editMode: boolean;
 };
 
-const RegenerateButton = ({ data, count }: Props) => {
+const RegenerateButton = ({ data, count, setJobDescriptionValue, JobDescriptionValue, editMode }: Props) => {
   const { toast } = useToast();
+
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (JobDescriptionValue != "") {
+      setIsDisabled(false);
+      if (editMode) {
+        setIsDisabled(editMode)
+      } else {
+        setIsDisabled(editMode)
+      }
+    } else {
+      setIsDisabled(true);
+    }
+    
+  },[JobDescriptionValue, editMode]);
 
   const onSuccess = (data: JobDescription) => {
     if (data.job_description) {
+      setJobDescriptionValue(data.job_description);
       toast({
         className: cn("top-right"),
         description: `Job Description for ${data.job_title} has been generated.`,
@@ -44,7 +64,6 @@ const RegenerateButton = ({ data, count }: Props) => {
 
   const handleOnClick = (data: JobDescription, count: number) => {
     data = { ...data, count: count };
-    console.log(data);
     mutate(data);
   };
 
@@ -54,6 +73,7 @@ const RegenerateButton = ({ data, count }: Props) => {
         <Button
           onClick={() => handleOnClick(data, count)}
           variant="ghost"
+          disabled={isDisabled}
           className="text-nowrap text-blue-800 text-base font-medium lg:flex lg:mt-1"
         >
           <LuRefreshCw className="mr-3 text-base" /> Re-generate

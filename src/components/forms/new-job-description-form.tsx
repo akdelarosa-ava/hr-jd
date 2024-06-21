@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
 import { LuSendHorizonal } from "react-icons/lu";
 import { CircleSpinnerOverlay } from "react-spinner-overlay";
 import { Input } from "@/components/ui/input";
@@ -13,14 +13,14 @@ import DepartmentSelect from "@/components/select-inputs/departments";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { cn } from "@/lib/utils";
+import { biasCheck, cn } from "@/lib/utils";
 import { useGenerate } from "@/hooks/job-description-hooks";
 import JobDescription from "@/models/job-description";
+import { AxiosError } from "@/services/axios-client";
 
 const formSchema = z.object({
-  _id: z.string().nullable(),
   job_title: z.string().min(1,{message: "Please provide a valid Job Title."}),
-  job_band: z.string().nullable(),
+  job_band: z.string().optional(),
   business_area: z.string().min(1,{message: "Please select a Business Area."}),
   department: z.string().min(1,{message: "Please select a Department"}),
   additional_info: z.string().default(""),
@@ -43,7 +43,6 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
   const newJDForm = useForm<FormModel>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      _id: null,
       job_title: "",
       job_band: "",
       business_area: "",
@@ -64,8 +63,15 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
 
   const onSuccess = (data: JobDescription) => {
     if (data.job_description) {
-      setJobDescriptionValue(data.job_description);
-      setFormValues(data);
+      const bias = data.bias;
+      const formatted_jd = biasCheck(data.job_description, bias);
+      data = {...data, job_description: formatted_jd};
+
+      if (data.job_description != undefined) {
+        setJobDescriptionValue(data.job_description);
+        setFormValues(data);
+      }
+      
       toast({
         className: cn("top-right"),
         description: `Job Description for ${data.job_title} has been generated.`
@@ -74,18 +80,36 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
   }
 
   const onError = (error: Error | string[]) => {
-    let message: ReactNode;
-    if (Array.isArray(error)) {
-      message = "An error has occurred."
-    } else {
-      message = error.message;
-    }
+    if (error instanceof AxiosError && error.response) {
+      if (error.response.status == 422) {
+        const error_detail = error.response.data.detail;
+        const title = error_detail.msg;
+        const message = `Invalid input: ${error_detail.input} as a Job Title`;
+        toast({
+          title: title,
+          className: cn("top-right"),
+          description: message,
+          variant: "destructive"
+        });
+      } else {
+        let message: ReactNode;
+        let title: string;
+        if (Array.isArray(error)) {
+          title = "Error!";
+          message = "An error has occurred."
+        } else {
+          title = error.message;
+          message = error.response.data.detail;
+        }
 
-    toast({
-      className: cn("top-right"),
-      description: message,
-      variant: "destructive"
-    });
+        toast({
+          title: title,
+          className: cn("top-right"),
+          description: message,
+          variant: "destructive"
+        });
+      }      
+    }
   }
 
   const {mutate, isPending } = useGenerate(onSuccess, onError);

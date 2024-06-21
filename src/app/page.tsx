@@ -4,12 +4,9 @@ import PageLayout from "@/components/layouts/page-layout";
 import PageTitle from "@/components/layouts/page-title";
 
 import { Button } from "@/components/ui/button";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import {
-  LuCopy,
-  LuDownload,
-  LuPen,
-  LuX,
+  LuPen
 } from "react-icons/lu";
 
 import JobDescription, { JobDescriptionType } from "@/models/job-description";
@@ -21,10 +18,11 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import TooltipProvider from "@/components/tooltips/tooltip-provider";
 import WordCountTooltip from "@/components/tooltips/word-count-tooltip";
-import { Textarea } from "@/components/ui/textarea";
 import RegenerateButton from "./_components/regenerate-button";
 import SaveButton from "./_components/save-button";
 import DiscardButton from "./_components/discard-button";
+import CopyButton from "./_components/copy-button";
+import DownloadButton from "./_components/download-button";
 
 export default function Home() {
   const [title, setTitle] = useState<string>(JobDescriptionType.New);
@@ -32,6 +30,7 @@ export default function Home() {
   const [JobDescriptionValue, setJobDescriptionValue] = useState<string>("");
   const [editMode, setEditMode] = useState<boolean>(false);
   const [clearForm, setClearForm] = useState<boolean>(false);
+  const [topThree, setTopThree] = useState<JobDescription[]>([]);
   const [formValues, setFormValues] = useState<JobDescription>({
     _id: "",
     job_title: "",
@@ -41,6 +40,14 @@ export default function Home() {
     additional_info: "",
     count: 0,
     job_description: "",
+    job_description_formatted: "",
+    bias: {
+      banned_words: [],
+      warning_words: [],
+      masculine_words: [],
+      feminine_words: [],
+      message: ""
+    }
   });
 
   let jdObj:JobDescription = formValues;
@@ -63,12 +70,6 @@ export default function Home() {
     setEditMode(!editMode);
   }
 
-  const handleJobDescriptionValueChange = (e:ChangeEvent<HTMLTextAreaElement>) => {
-    setJobDescriptionValue(e.target.value);
-    jdObj = {...formValues,job_description: e.target.value}
-    setFormValues(jdObj)
-  }
-
   return (
     <PageLayout>
       <div className="flex flex-col mx-5 my-10 xl:w-2/3 xl:mx-auto xl:mt-10">
@@ -78,7 +79,13 @@ export default function Home() {
           <CardContent className="flex flex-col gap-4">
             <RadioMenu changeTitle={handleChangeTitle} />
             {title == JobDescriptionType.Existing ? (
-              <ExistingJobDescriptionForm />
+              <ExistingJobDescriptionForm 
+                setFormValues={setFormValues}
+                countValue={countValue}
+                setJobDescriptionValue={setJobDescriptionValue}
+                setTopThree={setTopThree}
+                formValues={formValues}
+              />
             ) : (
               <NewJobDescriptionForm
                 setFormValues={setFormValues}
@@ -96,7 +103,11 @@ export default function Home() {
           className={`flex flex-col mx-0 md:mx-10 lg:mx-12 gap-4 mb-5 
           ${title == JobDescriptionType.Existing ? "block" : "hidden"}`}
         >
-          <SearchResult />
+          <SearchResult 
+            topThree={topThree} 
+            setFormValues={setFormValues} 
+            setJobDescriptionValue={setJobDescriptionValue}
+          />
         </div>
 
         <div className="flex flex-col mx-0 md:mx-10 lg:mx-12 gap-4 mb-5">
@@ -142,44 +153,61 @@ export default function Home() {
                 </TooltipProvider>
                 <span className="text-base font-medium py-4">words</span>
 
-                <RegenerateButton data={formValues} count={countValue} />
+                <RegenerateButton 
+                  data={formValues} 
+                  count={countValue} 
+                  setJobDescriptionValue={setJobDescriptionValue}
+                  JobDescriptionValue={JobDescriptionValue}
+                  editMode={editMode}
+                />
               </div>
             </div>
           </div>
 
-          <Textarea
+          <div 
+            className="overflow-auto min-h-[300px] max-h-[300px] w-full rounded-xl p-4 bg-white "
+            contentEditable={editMode}
+            dangerouslySetInnerHTML={{__html: JobDescriptionValue}}
+            onInput={(e) => {
+              if (e.currentTarget.textContent) {
+                setJobDescriptionValue(e.currentTarget.textContent);
+                jdObj = {...formValues,job_description: e.currentTarget.textContent}
+                setFormValues(jdObj)
+              }
+            }}
+          />
+          {/* <Textarea
             className="resize-none min-h-[300px] max-h-[300px] w-full rounded-xl p-4"
             value={JobDescriptionValue}
             readOnly={!editMode}
             onChange={handleJobDescriptionValueChange}
-          />
+          /> */}
 
           <div className="flex flex-col lg:flex-row gap-4">
-            <div className="w-full flex flex-col lg:w-2/3 lg:flex-row">
+            <div className="w-full flex flex-col lg:w-2/5 lg:flex-row">
               <p className="text-gray-700 text-sm pr-5 text-wrap">
                 <span className="font-semibold">{"Disclaimer:"}</span> These
                 results are auto-generated by AI. Please review and validate
                 them with a human expert before using them for your purposes.
               </p>
             </div>
-            <div className="w-full flex flex-col lg:w-1/3 lg:flex-row justify-end gap-2">
-              <Button variant="ghost" className={`text-blue-800 font-semibold ${editMode? 'hidden':'flex'}`}>
-                <LuCopy className="mr-3 text-base" /> Copy
-              </Button>
+            <div className="w-full flex flex-col lg:w-1/5 lg:flex-row"></div>
+            <div className="w-full flex flex-col lg:w-2/5 lg:flex-row justify-end gap-2">
+              <CopyButton editMode={editMode} JobDescriptionValue={JobDescriptionValue}/>
 
-              <Button variant="ghost" className={`text-blue-800 font-semibold ${editMode? 'hidden':'flex'}`}>
-                <LuDownload className="mr-3 text-base" /> Download
-              </Button>
+              <DownloadButton editMode={editMode} id={formValues._id ?? ""} job_title={formValues.job_title ?? ""}/>
 
-              <Button className={`text-white min-w-[150px] ${editMode? 'hidden':'flex'}`} onClick={handleEditMode}>
+              <Button 
+                className={`text-white min-w-[150px] ${editMode? 'hidden':'flex'}`} 
+                onClick={handleEditMode} 
+                disabled={JobDescriptionValue == ""? true:false}>
                 <LuPen className="mr-3 text-base" /> Edit
               </Button>
 
               <DiscardButton editMode={editMode} setJobDescriptionValue={setJobDescriptionValue} setEditMode={setEditMode}/>
 
-              <SaveButton editMode={editMode} data={formValues} setEditMode={setEditMode} setClearForm={setClearForm} setJobDescriptionValue={setJobDescriptionValue}/>
+              <SaveButton editMode={editMode} data={formValues} setEditMode={setEditMode} JobDescriptionValue={JobDescriptionValue}/>
 
-              
             </div>
           </div>
         </div>

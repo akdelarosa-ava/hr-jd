@@ -11,7 +11,7 @@ import { BusinessAreas } from "@/models/job-description";
 
 type Props = {
   onChange: (value: string) => void;
-  value: string;
+  value: string | undefined;
   placeholder?: string;
 };
 

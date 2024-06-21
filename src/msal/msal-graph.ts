@@ -26,12 +26,17 @@ export async function getUserPhotoAvatar() {
     headers: headers,
   };
 
-  return fetch(photoEndpoint, options)
-    .then((response) => response.blob())
-    .then((blob) => {
-      const url = URL.createObjectURL(blob);
+  const response = await fetch(photoEndpoint, options);
+    // .then((response) => response.blob())
+    // .then((blob) => {
+    //   const url = URL.createObjectURL(blob);
 
-      return url;
-    })
-    .catch((error) => console.log(error));
+    //   return url;
+    // })
+    // .catch((error) => console.log(error));
+
+  const blob = await response.blob();
+  const imgUrl = URL.createObjectURL(blob);
+
+  return imgUrl;
 }

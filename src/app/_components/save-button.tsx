@@ -23,10 +23,9 @@ type Props = {
   editMode: boolean;
   data: JobDescription;
 	setEditMode: Dispatch<SetStateAction<boolean>>;
-  setClearForm: Dispatch<SetStateAction<boolean>>;
-  setJobDescriptionValue: Dispatch<SetStateAction<string>>
+  JobDescriptionValue: string;
 };
-const SaveButton = ({ editMode, data, setEditMode, setClearForm, setJobDescriptionValue }: Props) => {
+const SaveButton = ({ editMode, data, setEditMode, JobDescriptionValue }: Props) => {
   const { toast } = useToast();
 
   const onSuccess = (data: JobDescription) => {
@@ -35,8 +34,7 @@ const SaveButton = ({ editMode, data, setEditMode, setClearForm, setJobDescripti
         className: cn("top-right"),
         description: `Job Description for ${data.job_title} has been saved.`,
       });
-      setClearForm(true);
-      setJobDescriptionValue("");
+      localStorage.clear();
 			setEditMode(!editMode);
     }
   };
@@ -59,7 +57,7 @@ const SaveButton = ({ editMode, data, setEditMode, setClearForm, setJobDescripti
   const { mutate, isPending } = useSaveJobDescription(onSuccess, onError);
 
   const handleOnClick = (data: JobDescription) => {
-    localStorage.clear();
+    data = {...data, 'job_description': JobDescriptionValue}
     mutate(data);
   };
 

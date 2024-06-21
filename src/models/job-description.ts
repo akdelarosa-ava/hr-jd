@@ -1,21 +1,31 @@
 export default interface JobDescription {
-  _id: string | null;
-  job_title: string;
-  job_band: string | null;
-  business_area: string;
-  department: string;
-  additional_info: string | null;
+  _id: string | undefined;
+  job_title: string | undefined;
+  job_band: string | undefined;
+  business_area: string | undefined;
+  department: string | undefined;
+  additional_info: string | undefined;
   count: number;
-  job_description: string | null;
+  job_description: string | undefined;
+  job_description_formatted?: string | undefined;
+  bias?: Bias;
+}
+
+export type Bias = {
+  banned_words: string[];
+  warning_words: string[];
+  masculine_words: string[];
+  feminine_words: string[];
+  message: string;
 }
 
 export type JobDescriptionForm = {
-  _id: string | null;
-  job_title: string;
-  job_band: string | null;
-  business_area: string;
-  department: string;
-  additional_info: string | null;
+  _id?: string | undefined;
+  job_title?: string | undefined;
+  job_band?: string | undefined;
+  business_area?: string | undefined;
+  department?: string | undefined;
+  additional_info?: string | undefined;
   count: number;
 };
 
