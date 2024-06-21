@@ -1,10 +1,16 @@
-import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import TooltipProvider from "@/components/tooltips/tooltip-provider";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useRegenerate } from "@/hooks/job-description-hooks";
 import JobDescription from "@/models/job-description";
-import { cn } from "@/lib/utils";
+import { biasCheck, cn } from "@/lib/utils";
 import { LuRefreshCw } from "react-icons/lu";
 import { CircleSpinnerOverlay } from "react-spinner-overlay";
 
@@ -14,9 +20,17 @@ type Props = {
   setJobDescriptionValue: Dispatch<SetStateAction<string>>;
   JobDescriptionValue: string;
   editMode: boolean;
+  formValues: JobDescription;
 };
 
-const RegenerateButton = ({ data, count, setJobDescriptionValue, JobDescriptionValue, editMode }: Props) => {
+const RegenerateButton = ({
+  data,
+  count,
+  setJobDescriptionValue,
+  JobDescriptionValue,
+  editMode,
+  formValues,
+}: Props) => {
   const { toast } = useToast();
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -25,19 +39,26 @@ const RegenerateButton = ({ data, count, setJobDescriptionValue, JobDescriptionV
     if (JobDescriptionValue != "") {
       setIsDisabled(false);
       if (editMode) {
-        setIsDisabled(editMode)
+        setIsDisabled(editMode);
       } else {
-        setIsDisabled(editMode)
+        setIsDisabled(editMode);
       }
     } else {
       setIsDisabled(true);
     }
-    
-  },[JobDescriptionValue, editMode]);
+  }, [JobDescriptionValue, editMode]);
 
   const onSuccess = (data: JobDescription) => {
     if (data.job_description) {
-      setJobDescriptionValue(data.job_description);
+      const bias = data.bias;
+      const formatted_jd = biasCheck(data.job_description, bias);
+      data = { ...data, job_description: formatted_jd };
+      console.log(data.job_description);
+
+      if (data.job_description != undefined) {
+        setJobDescriptionValue(data.job_description);
+      }
+
       toast({
         className: cn("top-right"),
         description: `Job Description for ${data.job_title} has been generated.`,
@@ -64,6 +85,7 @@ const RegenerateButton = ({ data, count, setJobDescriptionValue, JobDescriptionV
 
   const handleOnClick = (data: JobDescription, count: number) => {
     data = { ...data, count: count };
+    data = { ...data, _id: formValues._id };
     mutate(data);
   };
 

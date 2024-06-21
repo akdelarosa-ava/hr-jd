@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
 import { LuSendHorizonal } from "react-icons/lu";
 import { CircleSpinnerOverlay } from "react-spinner-overlay";
@@ -5,7 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import BusinessAreaSelect from "@/components/select-inputs/business-area";
 import JobBandSelect from "@/components/select-inputs/job-band";
 import DepartmentSelect from "@/components/select-inputs/departments";
@@ -19,10 +27,14 @@ import JobDescription from "@/models/job-description";
 import { AxiosError } from "@/services/axios-client";
 
 const formSchema = z.object({
-  job_title: z.string().min(1,{message: "Please provide a valid Job Title."}),
+  job_title: z
+    .string()
+    .min(1, { message: "Please provide a valid Job Title." }),
   job_band: z.string().optional(),
-  business_area: z.string().min(1,{message: "Please select a Business Area."}),
-  department: z.string().min(1,{message: "Please select a Department"}),
+  business_area: z
+    .string()
+    .min(1, { message: "Please select a Business Area." }),
+  department: z.string().min(1, { message: "Please select a Department" }),
   additional_info: z.string().default(""),
   count: z.number(),
 });
@@ -36,10 +48,16 @@ type Props = {
   editMode: boolean;
   clearForm: boolean;
   setClearForm: Dispatch<SetStateAction<boolean>>;
-}
+};
 
-const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValue, editMode, clearForm, setClearForm}:Props) => {
-  
+const NewJobDescriptionForm = ({
+  setFormValues,
+  setJobDescriptionValue,
+  countValue,
+  editMode,
+  clearForm,
+  setClearForm,
+}: Props) => {
   const newJDForm = useForm<FormModel>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,14 +67,14 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
       department: "",
       additional_info: "",
       count: countValue,
-    }
+    },
   });
 
   const {
     control,
     handleSubmit,
     watch,
-    formState: {isValid}
+    formState: { isValid },
   } = newJDForm;
 
   const { toast } = useToast();
@@ -65,19 +83,19 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
     if (data.job_description) {
       const bias = data.bias;
       const formatted_jd = biasCheck(data.job_description, bias);
-      data = {...data, job_description: formatted_jd};
+      data = { ...data, job_description: formatted_jd };
 
       if (data.job_description != undefined) {
         setJobDescriptionValue(data.job_description);
         setFormValues(data);
       }
-      
+
       toast({
         className: cn("top-right"),
-        description: `Job Description for ${data.job_title} has been generated.`
+        description: `Job Description for ${data.job_title} has been generated.`,
       });
     }
-  }
+  };
 
   const onError = (error: Error | string[]) => {
     if (error instanceof AxiosError && error.response) {
@@ -89,14 +107,14 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
           title: title,
           className: cn("top-right"),
           description: message,
-          variant: "destructive"
+          variant: "destructive",
         });
       } else {
         let message: ReactNode;
         let title: string;
         if (Array.isArray(error)) {
           title = "Error!";
-          message = "An error has occurred."
+          message = "An error has occurred.";
         } else {
           title = error.message;
           message = error.response.data.detail;
@@ -106,24 +124,24 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
           title: title,
           className: cn("top-right"),
           description: message,
-          variant: "destructive"
+          variant: "destructive",
         });
-      }      
+      }
     }
-  }
+  };
 
-  const {mutate, isPending } = useGenerate(onSuccess, onError);
+  const { mutate, isPending } = useGenerate(onSuccess, onError);
 
   const onSubmit = (data: FormModel) => {
     mutate(data);
-  }
+  };
 
   useEffect(() => {
     if (clearForm) {
-      newJDForm.reset()
-      setClearForm(false)
+      newJDForm.reset();
+      setClearForm(false);
     }
-  },[clearForm]);
+  }, [clearForm]);
 
   return (
     <>
@@ -133,9 +151,11 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
             <FormField
               control={control}
               name="job_title"
-              render={({field}) => (
+              render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold mb-3">Job Title <span className="text-red-500">*</span></FormLabel>
+                  <FormLabel className="text-base font-semibold mb-3">
+                    Job Title <span className="text-red-500">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="text"
@@ -145,7 +165,7 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage/>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -156,11 +176,17 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
               <FormField
                 control={control}
                 name="job_band"
-                render={({field}) => (
+                render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold mb-3">Job Band</FormLabel>
+                    <FormLabel className="text-base font-semibold mb-3">
+                      Job Band
+                    </FormLabel>
                     <FormControl>
-                      <JobBandSelect placeholder="Select Job Band" onChange={field.onChange} value={field.value}/>
+                      <JobBandSelect
+                        placeholder="Select Job Band"
+                        onChange={field.onChange}
+                        value={field.value}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -173,13 +199,19 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
               <FormField
                 control={control}
                 name="business_area"
-                render={({field}) => (
+                render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold mb-3">Business Area <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel className="text-base font-semibold mb-3">
+                      Business Area <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
-                      <BusinessAreaSelect placeholder="Select Business Area" onChange={field.onChange} value={field.value}/>
+                      <BusinessAreaSelect
+                        placeholder="Select Business Area"
+                        onChange={field.onChange}
+                        value={field.value}
+                      />
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -188,13 +220,19 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
               <FormField
                 control={control}
                 name="department"
-                render={({field}) => (
+                render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold mb-3">Department <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel className="text-base font-semibold mb-3">
+                      Department <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
-                      <DepartmentSelect placeholder="Select Department" onChange={field.onChange} value={field.value}/>
+                      <DepartmentSelect
+                        placeholder="Select Department"
+                        onChange={field.onChange}
+                        value={field.value}
+                      />
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -205,10 +243,11 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
             <FormField
               control={control}
               name="additional_info"
-              render={({field}) => (
-                
+              render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold mb-3">Additional Information</FormLabel>
+                  <FormLabel className="text-base font-semibold mb-3">
+                    Additional Information
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       className="border-slate-700 w-full focus:ring-0 focus:outline-none focus:ring-offset-0 resize-none"
@@ -219,17 +258,14 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={control}
               name="count"
-              render={({field}) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      type="hidden"
-                      defaultValue={countValue}
-                    />
+                    <Input type="hidden" defaultValue={countValue} />
                   </FormControl>
                 </FormItem>
               )}
@@ -243,7 +279,11 @@ const NewJobDescriptionForm = ({setFormValues, setJobDescriptionValue, countValu
           </div>
         </form>
       </Form>
-      <CircleSpinnerOverlay loading={isPending} color="#371376" message="Generating Job Description..."/>
+      <CircleSpinnerOverlay
+        loading={isPending}
+        color="#371376"
+        message="Generating Job Description..."
+      />
     </>
   );
 };

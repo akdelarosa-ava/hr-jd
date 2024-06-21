@@ -10,22 +10,26 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 import { useSaveJobDescription } from "@/hooks/job-description-hooks";
-import { cn } from "@/lib/utils";
+import { cn, removeHTMLFormat } from "@/lib/utils";
 import JobDescription from "@/models/job-description";
 import { Dispatch, ReactNode, SetStateAction } from "react";
 import { LuCheck } from "react-icons/lu";
 import { CircleSpinnerOverlay } from "react-spinner-overlay";
 
-
 type Props = {
   editMode: boolean;
   data: JobDescription;
-	setEditMode: Dispatch<SetStateAction<boolean>>;
+  setEditMode: Dispatch<SetStateAction<boolean>>;
   JobDescriptionValue: string;
 };
-const SaveButton = ({ editMode, data, setEditMode, JobDescriptionValue }: Props) => {
+const SaveButton = ({
+  editMode,
+  data,
+  setEditMode,
+  JobDescriptionValue,
+}: Props) => {
   const { toast } = useToast();
 
   const onSuccess = (data: JobDescription) => {
@@ -35,7 +39,7 @@ const SaveButton = ({ editMode, data, setEditMode, JobDescriptionValue }: Props)
         description: `Job Description for ${data.job_title} has been saved.`,
       });
       localStorage.clear();
-			setEditMode(!editMode);
+      setEditMode(!editMode);
     }
   };
 
@@ -57,7 +61,8 @@ const SaveButton = ({ editMode, data, setEditMode, JobDescriptionValue }: Props)
   const { mutate, isPending } = useSaveJobDescription(onSuccess, onError);
 
   const handleOnClick = (data: JobDescription) => {
-    data = {...data, 'job_description': JobDescriptionValue}
+    const jd = removeHTMLFormat(JobDescriptionValue);
+    data = { ...data, job_description: jd };
     mutate(data);
   };
 
@@ -65,7 +70,7 @@ const SaveButton = ({ editMode, data, setEditMode, JobDescriptionValue }: Props)
     <>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button className={`text-white ${editMode ? "flex" : "hidden"}`} >
+          <Button className={`text-white ${editMode ? "flex" : "hidden"}`}>
             <LuCheck className="mr-3 text-base" /> Save Changes
           </Button>
         </AlertDialogTrigger>
@@ -77,14 +82,20 @@ const SaveButton = ({ editMode, data, setEditMode, JobDescriptionValue }: Props)
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="ghost">No, keep editing</AlertDialogCancel>
-            <AlertDialogAction onClick={() => handleOnClick(data)} className="primary">Yes, save changes</AlertDialogAction>
+            <AlertDialogCancel className="ghost">
+              No, keep editing
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => handleOnClick(data)}
+              className="primary"
+            >
+              Yes, save changes
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      
-			<CircleSpinnerOverlay
+      <CircleSpinnerOverlay
         loading={isPending}
         color="#371376"
         message="Saving Job Description..."

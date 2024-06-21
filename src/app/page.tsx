@@ -1,13 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import NewJobDescriptionForm from "@/components/forms/new-job-description-form";
 import PageLayout from "@/components/layouts/page-layout";
 import PageTitle from "@/components/layouts/page-title";
 
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import {
-  LuPen
-} from "react-icons/lu";
+import { useCallback, useState } from "react";
+import { LuPen } from "react-icons/lu";
 
 import JobDescription, { JobDescriptionType } from "@/models/job-description";
 import RadioMenu from "./_components/radio-menu";
@@ -23,6 +22,7 @@ import SaveButton from "./_components/save-button";
 import DiscardButton from "./_components/discard-button";
 import CopyButton from "./_components/copy-button";
 import DownloadButton from "./_components/download-button";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function Home() {
   const [title, setTitle] = useState<string>(JobDescriptionType.New);
@@ -46,11 +46,11 @@ export default function Home() {
       warning_words: [],
       masculine_words: [],
       feminine_words: [],
-      message: ""
-    }
+      message: "",
+    },
   });
 
-  let jdObj:JobDescription = formValues;
+  let jdObj: JobDescription = formValues;
 
   const handleChangeTitle = (value: string) => {
     if (value == "existing") {
@@ -66,9 +66,20 @@ export default function Home() {
   };
 
   const handleEditMode = () => {
-    localStorage.setItem("job_description",JobDescriptionValue);
+    localStorage.setItem("job_description", JobDescriptionValue);
     setEditMode(!editMode);
-  }
+  };
+
+  const onContentBlur = useCallback((e: any) => {
+    if (e.currentTarget.textContent) {
+      setJobDescriptionValue(e.currentTarget.textContent);
+      jdObj = {
+        ...formValues,
+        job_description: e.currentTarget.textContent,
+      };
+      setFormValues(jdObj);
+    }
+  }, []);
 
   return (
     <PageLayout>
@@ -79,7 +90,7 @@ export default function Home() {
           <CardContent className="flex flex-col gap-4">
             <RadioMenu changeTitle={handleChangeTitle} />
             {title == JobDescriptionType.Existing ? (
-              <ExistingJobDescriptionForm 
+              <ExistingJobDescriptionForm
                 setFormValues={setFormValues}
                 countValue={countValue}
                 setJobDescriptionValue={setJobDescriptionValue}
@@ -103,9 +114,9 @@ export default function Home() {
           className={`flex flex-col mx-0 md:mx-10 lg:mx-12 gap-4 mb-5 
           ${title == JobDescriptionType.Existing ? "block" : "hidden"}`}
         >
-          <SearchResult 
-            topThree={topThree} 
-            setFormValues={setFormValues} 
+          <SearchResult
+            topThree={topThree}
+            setFormValues={setFormValues}
             setJobDescriptionValue={setJobDescriptionValue}
           />
         </div>
@@ -153,34 +164,29 @@ export default function Home() {
                 </TooltipProvider>
                 <span className="text-base font-medium py-4">words</span>
 
-                <RegenerateButton 
-                  data={formValues} 
-                  count={countValue} 
+                <RegenerateButton
+                  data={formValues}
+                  count={countValue}
                   setJobDescriptionValue={setJobDescriptionValue}
                   JobDescriptionValue={JobDescriptionValue}
                   editMode={editMode}
+                  formValues={formValues}
                 />
               </div>
             </div>
           </div>
 
-          <div 
-            className="overflow-auto min-h-[300px] max-h-[300px] w-full rounded-xl p-4 bg-white "
+          <div
+            className="border border-gray-300 overflow-auto min-h-[300px] max-h-[300px] w-full rounded-xl p-4 bg-white "
             contentEditable={editMode}
-            dangerouslySetInnerHTML={{__html: JobDescriptionValue}}
-            onInput={(e) => {
-              if (e.currentTarget.textContent) {
-                setJobDescriptionValue(e.currentTarget.textContent);
-                jdObj = {...formValues,job_description: e.currentTarget.textContent}
-                setFormValues(jdObj)
-              }
-            }}
+            dangerouslySetInnerHTML={{ __html: JobDescriptionValue }}
+            onBlur={onContentBlur}
           />
           {/* <Textarea
             className="resize-none min-h-[300px] max-h-[300px] w-full rounded-xl p-4"
             value={JobDescriptionValue}
             readOnly={!editMode}
-            onChange={handleJobDescriptionValueChange}
+            onChange={}
           /> */}
 
           <div className="flex flex-col lg:flex-row gap-4">
@@ -193,21 +199,37 @@ export default function Home() {
             </div>
             <div className="w-full flex flex-col lg:w-1/5 lg:flex-row"></div>
             <div className="w-full flex flex-col lg:w-2/5 lg:flex-row justify-end gap-2">
-              <CopyButton editMode={editMode} JobDescriptionValue={JobDescriptionValue}/>
+              <CopyButton
+                editMode={editMode}
+                JobDescriptionValue={JobDescriptionValue}
+              />
 
-              <DownloadButton editMode={editMode} id={formValues._id ?? ""} job_title={formValues.job_title ?? ""}/>
+              <DownloadButton
+                editMode={editMode}
+                id={formValues._id ?? ""}
+                job_title={formValues.job_title ?? ""}
+              />
 
-              <Button 
-                className={`text-white min-w-[150px] ${editMode? 'hidden':'flex'}`} 
-                onClick={handleEditMode} 
-                disabled={JobDescriptionValue == ""? true:false}>
+              <Button
+                className={`text-white min-w-[150px] ${editMode ? "hidden" : "flex"}`}
+                onClick={handleEditMode}
+                disabled={JobDescriptionValue == "" ? true : false}
+              >
                 <LuPen className="mr-3 text-base" /> Edit
               </Button>
 
-              <DiscardButton editMode={editMode} setJobDescriptionValue={setJobDescriptionValue} setEditMode={setEditMode}/>
+              <DiscardButton
+                editMode={editMode}
+                setJobDescriptionValue={setJobDescriptionValue}
+                setEditMode={setEditMode}
+              />
 
-              <SaveButton editMode={editMode} data={formValues} setEditMode={setEditMode} JobDescriptionValue={JobDescriptionValue}/>
-
+              <SaveButton
+                editMode={editMode}
+                data={formValues}
+                setEditMode={setEditMode}
+                JobDescriptionValue={JobDescriptionValue}
+              />
             </div>
           </div>
         </div>
